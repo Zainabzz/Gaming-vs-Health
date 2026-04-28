@@ -329,7 +329,7 @@
     <div class="graph-card">
       <div class="graph-title">Daily Gaming Hours Distribution</div>
       <div class="graph-desc">How many hours per day people in the sample game. Your value shown in orange after analysis.</div>
-      <canvas id="hist-gaming" height="200"></canvas>
+      <canvas id="hist-gaming" height="280"></canvas>
       <div class="legend-row">
         <div class="legend-item"><div class="legend-dot" style="background:#00e5ff"></div>Sample count</div>
         <div class="legend-item" id="leg-gaming-user" style="display:none"><div class="legend-line" style="background:#f59e0b"></div>Your value</div>
@@ -340,7 +340,7 @@
     <div class="graph-card">
       <div class="graph-title">Age Distribution</div>
       <div class="graph-desc">Age spread across the dataset. Your age shown in orange after analysis.</div>
-      <canvas id="hist-age" height="200"></canvas>
+      <canvas id="hist-age" height="280"></canvas>
       <div class="legend-row">
         <div class="legend-item"><div class="legend-dot" style="background:#6d28d9"></div>Sample count</div>
         <div class="legend-item" id="leg-age-user" style="display:none"><div class="legend-line" style="background:#f59e0b"></div>Your value</div>
@@ -351,7 +351,7 @@
     <div class="graph-card">
       <div class="graph-title">Mental Health Score Comparison</div>
       <div class="graph-desc">Distribution of stress, anxiety, and depression scores. Box = IQR, line = median, whiskers = 1.5×IQR, dots = outliers.</div>
-      <canvas id="boxplot" height="220"></canvas>
+      <canvas id="boxplot" height="300"></canvas>
       <div class="legend-row">
         <div class="legend-item"><div class="legend-dot" style="background:#00e5ff;border-radius:2px;width:14px;height:10px"></div>Stress</div>
         <div class="legend-item"><div class="legend-dot" style="background:#6d28d9;border-radius:2px;width:14px;height:10px"></div>Anxiety</div>
@@ -364,7 +364,7 @@
     <div class="graph-card">
       <div class="graph-title">Gaming Hours vs Addiction Level</div>
       <div class="graph-desc">Each dot is one person. More gaming generally links to higher addiction. Your position highlighted after analysis.</div>
-      <canvas id="scatter-addiction" height="260"></canvas>
+      <canvas id="scatter-addiction" height="340"></canvas>
       <div class="legend-row">
         <div class="legend-item"><div class="legend-dot" style="background:#00e5ff;opacity:0.5"></div>Male</div>
         <div class="legend-item"><div class="legend-dot" style="background:#6d28d9;opacity:0.5"></div>Female</div>
@@ -376,7 +376,7 @@
     <div class="graph-card">
       <div class="graph-title">Sleep Hours vs Exercise Hours</div>
       <div class="graph-desc">Relationship between sleep and exercise. Color shows stress level (green = low, red = high).</div>
-      <canvas id="scatter-sleep" height="260"></canvas>
+      <canvas id="scatter-sleep" height="340"></canvas>
       <div class="legend-row">
         <div class="legend-item"><div class="legend-dot" style="background:#10b981"></div>Low stress</div>
         <div class="legend-item"><div class="legend-dot" style="background:#f59e0b"></div>Med stress</div>
@@ -389,7 +389,7 @@
     <div class="graph-card">
       <div class="graph-title">Average Addiction Level by Gender</div>
       <div class="graph-desc">Compares mean addiction score between male and female gamers in the sample.</div>
-      <canvas id="bar-gender" height="200"></canvas>
+      <canvas id="bar-gender" height="280"></canvas>
     </div>
 
   </div><!-- /graphs-section -->
@@ -658,18 +658,27 @@ function renderMode() {
 // =========================================================
 var DPR = window.devicePixelRatio || 1;
 
+var _canvasSizes = {};
+
 function setupCanvas(id) {
-  var canvas = document.getElementById(id);
-  var rect = canvas.parentElement.getBoundingClientRect();
-  var w = rect.width - 40;
-  var h = parseInt(canvas.getAttribute('height')) || 220;
-  canvas.style.width  = w + 'px';
-  canvas.style.height = h + 'px';
-  canvas.width  = w * DPR;
-  canvas.height = h * DPR;
-  var ctx = canvas.getContext('2d');
-  ctx.scale(DPR, DPR);
-  return { ctx:ctx, w:w, h:h };
+    var canvas = document.getElementById(id);
+    var w, h;
+    if (_canvasSizes[id]) {
+        w = _canvasSizes[id].w;
+        h = _canvasSizes[id].h;
+    } else {
+        var rect = canvas.parentElement.getBoundingClientRect();
+        w = rect.width - 40;
+        h = parseInt(canvas.getAttribute('height')) || 220;
+        _canvasSizes[id] = { w: w, h: h };
+    }
+    canvas.style.width  = w + 'px';
+    canvas.style.height = h + 'px';
+    canvas.width  = w * DPR;
+    canvas.height = h * DPR;
+    var ctx = canvas.getContext('2d');
+    ctx.scale(DPR, DPR);
+    return { ctx:ctx, w:w, h:h };
 }
 
 function px(v, domSize) { return v; }  // already in DOM px
